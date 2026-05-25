@@ -25,7 +25,7 @@ schema = (
 def raw_marathos_data(): 
     return (
         spark.readStream.format("csv")
-        .options(header=True, encoding="latin1")
+        .options(header=True, encoding="UTF-8")
         .schema(schema).load(f"{BASE_DIR}/data")
     )
 
