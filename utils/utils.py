@@ -1,5 +1,6 @@
 ## Rename columns to snake_case 
-import re 
+import re
+from pyspark.sql.functions import col, lit, coalesce, when
 
 #tested to do both functions but will use snake_case for good readibility 
 
@@ -17,3 +18,12 @@ def to_camelCase(name):
 def rename_columns_to_snakecase(df): 
     new_columns = [to_snake_case(column) for column in df.columns]
     return df.toDF(*new_columns) 
+
+
+def clean_null_values_string(df):
+    for column, col_type in df.dtypes: 
+        if col_type == "string": 
+            df = df.withColumn(column, coalesce(col(column), lit("unknown")))
+    return df
+
+
