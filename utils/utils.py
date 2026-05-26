@@ -20,10 +20,5 @@ def rename_columns_to_snakecase(df):
     return df.toDF(*new_columns) 
 
 
-def clean_null_values_string(df):
-    for column, col_type in df.dtypes: 
-        if col_type == "string": 
-            df = df.withColumn(column, coalesce(col(column), lit("unknown")))
-    return df
 
 

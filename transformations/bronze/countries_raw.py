@@ -8,7 +8,7 @@ BASE_DIR = "/Volumes/marathos/default/raw"
 schema = (
     spark.read.format("csv")
     .options(header=True, inferSchema=True)
-    .load(f"{BASE_DIR}/data/countries.csv")
+    .load(f"{BASE_DIR}/country_data/countries.csv")
     .schema
 )
 
@@ -29,5 +29,5 @@ def raw_countries_data():
         spark.readStream.format("csv")
         .options(header=True, encoding="UTF-8")
         .schema(schema)
-        .load(f"{BASE_DIR}/data")
+        .load(f"{BASE_DIR}/country_data")
     )

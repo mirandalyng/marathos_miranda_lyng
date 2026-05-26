@@ -31,3 +31,5 @@ The demensional modeling is done in [DB Diagram](https://dbdiagram.io/home)
 
 [Ultra Marathon Running Dataset - Kaggle](https://www.kaggle.com/datasets/aiaiaidavid/the-big-dataset-of-ultra-marathon-running)
 
+[Country Raw dataset iso 3166 - GitHub](https://github.com/ipregistry/iso3166.git)
+
