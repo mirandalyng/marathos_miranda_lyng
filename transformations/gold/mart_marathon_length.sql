@@ -3,7 +3,7 @@ USE CATALOG marathos;
 USE SCHEMA gold;
 
 
-CREATE OR REFRESH MATERIALIZED VIEW marathos.gold.mart_marathon_distance
+CREATE OR REFRESH MATERIALIZED VIEW marathos.gold.mart_marathon_length
   COMMENT "Serving view for marathons in distance category" AS
 
 SELECT 
@@ -19,7 +19,7 @@ SELECT
     e.event_distance_km,
     r.event_dates,
     r.year_of_event,
-    fr.athlete_performance_distance_km,
+    fr.athlete_performance_time_h,
     fr.athlete_average_speed
 
 FROM 
@@ -30,4 +30,4 @@ LEFT JOIN dim_event e ON fr.event_id = e.event_id
 LEFT JOIN dim_race r ON fr.race_id = r.race_id
 
 WHERE
- e.event_unit = 'km'
+ e.event_unit = 'h'
