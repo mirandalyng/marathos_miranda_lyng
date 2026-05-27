@@ -1,0 +1,75 @@
+{
+  "datasets": [
+    {
+      "name": "5a46887f",
+      "displayName": "Top Marathon Events by Distance in Kilometers",
+      "queryLines": [
+        "SELECT\n",
+        "  event_name,\n",
+        "  event_country_name,\n",
+        "  event_distance_km\n",
+        "FROM\n",
+        "  marathos.gold.dim_event \n",
+        "WHERE\n",
+        "  event_unit = 'km' or event_unit = 'mi'\n",
+        "ORDER BY\n",
+        "  event_distance_km DESC\n",
+        "LIMIT 5"
+      ]
+    },
+    {
+      "name": "59bdb476",
+      "displayName": "Top Marathon Events Ranked by Longest Distances",
+      "queryLines": [
+        "SELECT\n",
+        "  event_name,\n",
+        "  event_country_name,\n",
+        "  event_distance_km\n",
+        "FROM\n",
+        "  marathos.gold.dim_event \n",
+        "WHERE\n",
+        "  event_unit = 'km' or event_unit = 'mi'\n",
+        "ORDER BY\n",
+        "  event_distance_km DESC\n",
+        "LIMIT 5"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "1a6d976a",
+      "displayName": "marathos",
+      "layout": [
+        {
+          "widget": {
+            "name": "c946cbab",
+            "multilineTextboxSpec": {
+              "lines": [
+                "<span style=\"font-size:36px;line-height:1.5;font-family:Tahoma\">**Ultra Marathon Dashboard**</span>"
+              ]
+            },
+            "specExtensions": {
+              "widgetBackgroundColor": {
+                "light": "#000000"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 2
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}

@@ -96,13 +96,18 @@ def cleaned_marathos():
             .otherwise(None),
         )
         ## Event distance is converted to hours as a double for timed events
+        ## HH:MM format (e.g. 15:30) is converted to decimal hours (e.g. 15.5)
         .withColumn(
             "event_distance_h",
             when(
                 col("event_unit") == "h",
-                regexp_replace(col("event_distance/length"), "[^0-9.]", "").cast(
-                    "double"
-                ),
+                when(
+                    col("event_distance/length").contains(":"),
+                    regexp_extract(col("event_distance/length"), r"(\d+):", 1).cast("double") +
+                    regexp_extract(col("event_distance/length"), r":(\d+)", 1).cast("double") / 60.0
+                ).otherwise(
+                    regexp_replace(col("event_distance/length"), "[^0-9.]", "").cast("double")
+                )
             ).otherwise(None),
         )
         ## Event ID is generated from the event name
