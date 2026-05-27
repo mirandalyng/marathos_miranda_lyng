@@ -21,6 +21,8 @@
 
 The demensional modeling is done in [DB Diagram](https://dbdiagram.io/home)
 
+![Dimensional modeling](dimensional_modeling/dimensional_modeling.png)
+
 
 ### Dashboard 
 
@@ -33,3 +35,8 @@ The demensional modeling is done in [DB Diagram](https://dbdiagram.io/home)
 
 [Country Raw dataset iso 3166 - GitHub](https://github.com/ipregistry/iso3166.git)
 
+**Sources:**
+
+[Databricks documentation](https://docs.databricks.com/aws/en/)
+
+[Apache Spark doucmentation](https://spark.apache.org/docs/latest/api/python/index.html)
