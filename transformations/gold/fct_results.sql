@@ -6,6 +6,7 @@ SELECT
     event_id, 
     athlete_id, 
     performance_unit, 
+    athlete_performance, 
     athlete_performance_distance_km, 
     athlete_performance_time_h, 
     athlete_average_speed

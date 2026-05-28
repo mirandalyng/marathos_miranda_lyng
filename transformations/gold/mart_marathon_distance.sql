@@ -13,7 +13,7 @@ SELECT
     a.athlete_age_category,
     a.athlete_country_name,
     a.athlete_club,
-    a.athlete_performance,
+    fr.athlete_performance,
     e.event_name,
     e.event_country_name,
     e.event_distance_km,
@@ -30,4 +30,4 @@ LEFT JOIN dim_event e ON fr.event_id = e.event_id
 LEFT JOIN dim_race r ON fr.race_id = r.race_id
 
 WHERE
- e.event_unit = 'km' or e.event_unit = 'mi'
+  e.event_unit = 'km' or e.event_unit = 'mi'

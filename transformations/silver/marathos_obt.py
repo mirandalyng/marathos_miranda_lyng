@@ -52,7 +52,10 @@ def cleaned_marathos():
         .withColumn(
             "event_name",
             coalesce(
-                trim(regexp_replace(col("event_name"), r'^#|"|\*', "")), lit("unknown")
+                when(
+                    trim(regexp_replace(col("event_name"), r'^#|"|\*', "")) == "", None
+                ).otherwise(trim(regexp_replace(col("event_name"), r'^#|"|\*', ""))),
+                lit("unknown"),
             ),
         )
         ## Event dates is converted to a date
@@ -103,11 +106,18 @@ def cleaned_marathos():
                 col("event_unit") == "h",
                 when(
                     col("event_distance/length").contains(":"),
-                    regexp_extract(col("event_distance/length"), r"(\d+):", 1).cast("double") +
-                    regexp_extract(col("event_distance/length"), r":(\d+)", 1).cast("double") / 60.0
+                    regexp_extract(col("event_distance/length"), r"(\d+):", 1).cast(
+                        "double"
+                    )
+                    + regexp_extract(col("event_distance/length"), r":(\d+)", 1).cast(
+                        "double"
+                    )
+                    / 60.0,
                 ).otherwise(
-                    regexp_replace(col("event_distance/length"), "[^0-9.]", "").cast("double")
-                )
+                    regexp_replace(col("event_distance/length"), "[^0-9.]", "").cast(
+                        "double"
+                    )
+                ),
             ).otherwise(None),
         )
         ## Event ID is generated from the event name
@@ -179,6 +189,15 @@ def cleaned_marathos():
         ## Filter and keep the valid performances, then drop the column
         .filter(col("is_valid_performance") == True)
         .drop("is_valid_performance")
+        .filter(
+            ~col("event_distance/length").rlike(r"(?i)etappen|tage|days|/|,") &
+            col("athlete_id").isNotNull() &
+            col("year_of_event").isNotNull() &
+            col("event_dates").isNotNull() & 
+            (col("year_of_event") - col("athlete_year_of_birth") >= 18) & 
+            (col("year_of_event") - col("athlete_year_of_birth") <= 83) &
+            (col("athlete_year_of_birth") >= 1700)
+        )
         ## Athlete performance distance is converted to km as a double
         .withColumn(
             "athlete_performance_distance_km",
@@ -236,7 +255,7 @@ def cleaned_marathos():
                 .otherwise(None),
                 2,
             ),
-        )  
+        )
     )
 
     ## Event country name is mapped from the country code
@@ -258,8 +277,7 @@ def cleaned_marathos():
         sha2(concat_ws("_", col("race_id"), col("athlete_id").cast("string")), 256),
     ).drop("event_country_code", "event_country_long")
 
-
-    #ordering the columns
+    # ordering the columns
     df = df.select(
         # EVENT
         "event_id",
@@ -274,7 +292,6 @@ def cleaned_marathos():
         "event_distance_km",
         "event_distance_h",
         "event_number_of_finishers",
-        
         # ATHLETE
         "athlete_id",
         "athlete_year_of_birth",
@@ -284,7 +301,7 @@ def cleaned_marathos():
         "athlete_country_name",
         "athlete_club",
         # PERFORMANCE
-        "result_id", 
+        "result_id",
         "athlete_performance",
         "performance_unit",
         "athlete_performance_distance_km",

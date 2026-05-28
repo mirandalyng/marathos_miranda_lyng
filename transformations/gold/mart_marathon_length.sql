@@ -13,7 +13,7 @@ SELECT
     a.athlete_age_category,
     a.athlete_country_name,
     a.athlete_club,
-    a.athlete_performance, 
+    fr.athlete_performance, 
     e.event_name,
     e.event_country_name,
     e.event_distance_h,

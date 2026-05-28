@@ -7,8 +7,7 @@ SELECT
     MAX_BY(athlete_age_category, event_dates)  AS athlete_age_category, 
     MAX_BY(athlete_country, event_dates) AS athlete_country, 
     MAX_BY(athlete_country_name, event_dates)  AS athlete_country_name, 
-    MAX_BY(athlete_club, event_dates) AS athlete_club, 
-    MAX_BY(athlete_performance, event_dates) AS athlete_performance
+    MAX_BY(athlete_club, event_dates) AS athlete_club
 
 
 FROM 

@@ -1,37 +1,28 @@
 {
   "datasets": [
     {
-      "name": "5a46887f",
-      "displayName": "Top Marathon Events by Distance in Kilometers",
+      "name": "af00141f",
+      "displayName": "Top Marathon Events by Distance Dataset",
       "queryLines": [
-        "SELECT\n",
-        "  event_name,\n",
-        "  event_country_name,\n",
-        "  event_distance_km\n",
-        "FROM\n",
-        "  marathos.gold.dim_event \n",
-        "WHERE\n",
-        "  event_unit = 'km' or event_unit = 'mi'\n",
-        "ORDER BY\n",
-        "  event_distance_km DESC\n",
-        "LIMIT 5"
+        "SELECT \n",
+        "    event_name, \n",
+        "    event_distance_km\n",
+        "FROM marathos.gold.mart_marathon_distance\n",
+        "ORDER BY event_distance_km DESC\n",
+        "LIMIT 10"
       ]
     },
     {
-      "name": "59bdb476",
-      "displayName": "Top Marathon Events Ranked by Longest Distances",
+      "name": "a48a7344",
+      "displayName": "Top Marathon Events by Distance",
       "queryLines": [
         "SELECT\n",
-        "  event_name,\n",
-        "  event_country_name,\n",
-        "  event_distance_km\n",
-        "FROM\n",
-        "  marathos.gold.dim_event \n",
-        "WHERE\n",
-        "  event_unit = 'km' or event_unit = 'mi'\n",
-        "ORDER BY\n",
-        "  event_distance_km DESC\n",
-        "LIMIT 5"
+        "    event_dates,\n",
+        "    event_name, \n",
+        "    event_distance_h\n",
+        "FROM marathos.gold.mart_marathon_length\n",
+        "ORDER BY event_distance_h desc\n",
+        "LIMIT 10"
       ]
     }
   ],
