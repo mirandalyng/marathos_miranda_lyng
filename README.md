@@ -16,21 +16,27 @@ global company called Marathos, which hosts marathons all over the world.
 - Ingesting data into the bronze layer 
 
 #### Silver 
+
 **Cleaning of the dataset:**
-- **Standardization:** Converted all column names to `snake_case`.
-- **Data Sanitization:** Stripped special characters (`#`, `*`, `"`) and trimmed whitespace from strings.
-- **Schema Enforcement:** Cast `event_dates` to proper Date type and birth years to Integers.
-- **ID Generation:** Created unique `SHA-256` hash keys for `event_id`, `race_id`, and `result_id`.
-- **Geographic Enrichment:** Enriched athlete and event data with full country names using ISO reference data.
-- **Unit & Distance Normalization:** Parsed units (`km`, `mi`, `h`) and converted miles to kilometers for unified metrics.
-- **Performance Calculation:** Cleaned time strings into decimal hours and calculated standardized running speeds (km/h).
+
+*Read more in the data_desisions file*
+
+- **Event names** are stripped of leading `#`, `"`, and `*` characters; names that are empty after cleaning are replaced with `unknown`
+- **Athlete club** values are stripped of leading `#`, `"`, and `*` characters; empty values are replaced with `unknown`
+- **Athlete country** empty values are replaced with `unknown`
+- **Athlete gender** and **age category** empty values are replaced with `unknown`
+- **Event country** is extracted from the event name using the three-letter country code in parentheses, e.g. `Berlin Marathon (GER)` → `GER`, and resolved to a full country name via a country reference table
+- **Athlete country** is resolved to a full country name via the same country reference table, matching on both ISO Alpha-3 code and long name
 - **Data Validation:** Filtered out invalid performances (e.g., DNF / broken records) and structured the output into an optimized One Big Table (OBT).
 
 #### Gold
 
-- Create gold layer based on dimensional model 
+- Gold layer are built based on the dimensional model 
+    - star schema fct_results (streaming table) 
+    - dim_tables for athlete, race, event (materalized views)
+- Views are created for the marathon types (distance, length)
+- Validation and debugging is made in the gold EDA for verifying the tables that are created 
 
-- Create viwes for the marathon types (distance, length)
 
 
 #### Pipeline graph - bronze -> silver -> gold 
@@ -60,6 +66,8 @@ The demensional modeling is done in [DB Diagram](https://dbdiagram.io/home)
 [Databricks documentation](https://docs.databricks.com/aws/en/)
 
 [Apache Spark doucmentation](https://spark.apache.org/docs/latest/api/python/index.html)
+
+LMM is used for Debugging, regexp and creating summarys for readme/data_decisions file. 
 
 
 
