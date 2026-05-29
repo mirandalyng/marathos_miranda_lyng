@@ -37,10 +37,10 @@ def cleaned_marathos():
         col("name_long").alias("athlete_country_long"),
     )
 
-    df_countries_event = df_countries.select(
-        col("country_code_alpha3").alias("event_country_code"),
-        col("name_long").alias("event_country_long"),
-    )
+    # df_countries_event = df_countries.select(
+    #     col("country_code_alpha3").alias("event_country_code"),
+    #     col("name_long").alias("event_country_long"),
+    # )
 
     df = (
         df.join(
@@ -51,87 +51,107 @@ def cleaned_marathos():
         )
         #### EVENT ############
         ## Event name is cleaned from special characters
-        .withColumn(
-            "event_name",
-            coalesce(
-                when(
-                    trim(regexp_replace(col("event_name"), r'^#|"|\*', "")) == "", None
-                ).otherwise(trim(regexp_replace(col("event_name"), r'^#|"|\*', ""))),
-                lit("unknown"),
-            ),
-        )
+
+        ##Moved to utils
+        # .withColumn(
+        #     "event_name",
+        #     coalesce(
+        #         when(
+        #             trim(regexp_replace(col("event_name"), r'^#|"|\*', "")) == "", None
+        #         ).otherwise(trim(regexp_replace(col("event_name"), r'^#|"|\*', ""))),
+        #         lit("unknown"),
+        #     ),
+        # )
         ## Event dates is converted to a date
-        .withColumn("event_dates", try_to_date(trim(col("event_dates")), "dd.MM.yyyy"))
+        #MOVED TO UTILS
+        
+        # .withColumn("event_dates", try_to_date(trim(col("event_dates")), "dd.MM.yyyy"))
+
+
+        ## moved to utils
         ## Event country is extracted from the event name
-        .withColumn(
-            "event_country",
-            when(
-                regexp_extract(col("event_name"), r"\(([A-Z]{3})\)", 1) == "", None
-            ).otherwise(regexp_extract(col("event_name"), r"\(([A-Z]{3})\)", 1)),
-        )
+        # .withColumn(
+        #     "event_country",
+        #     when(
+        #         regexp_extract(col("event_name"), r"\(([A-Z]{3})\)", 1) == "", None
+        #     ).otherwise(regexp_extract(col("event_name"), r"\(([A-Z]{3})\)", 1)),
+        # )
         ## Event unit is determined based on the event distance/length column
-        .withColumn(
-            "event_unit",
-            when(col("event_distance/length").contains("km"), "km")
-            .when(col("event_distance/length").contains("mi"), "mi")
-            .when(col("event_distance/length").contains("h"), "h")
-            .otherwise("unknown"),
-        )
+
+        ## moved to utils
+        # .withColumn(
+        #     "event_unit",
+        #     when(col("event_distance/length").contains("km"), "km")
+        #     .when(col("event_distance/length").contains("mi"), "mi")
+        #     .when(col("event_distance/length").contains("h"), "h")
+        #     .otherwise("unknown"),
+        # )
         ## Event distance/length is cleaned to remove km, mi and h
-        .withColumn(
-            "event_distance/length",
-            regexp_replace(col("event_distance/length"), r"km|mi|h", ""),
-        )
+
+        ## moved to utils
+        # .withColumn(
+        #     "event_distance/length",
+        #     regexp_replace(col("event_distance/length"), r"km|mi|h", ""),
+        # )
         ## Event distance is converted to km as a double
-        .withColumn(
-            "event_distance_km",
-            when(
-                col("event_unit") == "km",
-                regexp_replace(col("event_distance/length"), "[^0-9.]", "").cast(
-                    "double"
-                ),
-            )
-            .when(
-                col("event_unit") == "mi",
-                regexp_replace(col("event_distance/length"), "[^0-9.]", "").cast(
-                    "double"
-                )
-                * 1.60934,
-            )
-            .otherwise(None),
-        )
+
+        # ## MOved to utils
+        # .withColumn(
+        #     "event_distance_km",
+        #     when(
+        #         col("event_unit") == "km",
+        #         regexp_replace(col("event_distance/length"), "[^0-9.]", "").cast(
+        #             "double"
+        #         ),
+        #     )
+        #     .when(
+        #         col("event_unit") == "mi",
+        #         regexp_replace(col("event_distance/length"), "[^0-9.]", "").cast(
+        #             "double"
+        #         )
+        #         * 1.60934,
+        #     )
+        #     .otherwise(None),
+        # )
         ## Event distance is converted to hours as a double for timed events
         ## HH:MM format (e.g. 15:30) is converted to decimal hours (e.g. 15.5)
-        .withColumn(
-            "event_distance_h",
-            when(
-                col("event_unit") == "h",
-                when(
-                    col("event_distance/length").contains(":"),
-                    regexp_extract(col("event_distance/length"), r"(\d+):", 1).cast(
-                        "double"
-                    )
-                    + regexp_extract(col("event_distance/length"), r":(\d+)", 1).cast(
-                        "double"
-                    )
-                    / 60.0,
-                ).otherwise(
-                    regexp_replace(col("event_distance/length"), "[^0-9.]", "").cast(
-                        "double"
-                    )
-                ),
-            ).otherwise(None),
-        )
-        ## Event ID is generated from the event name
-        .withColumn(
-            "event_id",
-            sha2(col("event_name"), 256),
-        )
+        # .withColumn(
+        #     "event_distance_h",
+        #     when(
+        #         col("event_unit") == "h",
+        #         when(
+        #             col("event_distance/length").contains(":"),
+        #             regexp_extract(col("event_distance/length"), r"(\d+):", 1).cast(
+        #                 "double"
+        #             )
+        #             + regexp_extract(col("event_distance/length"), r":(\d+)", 1).cast(
+        #                 "double"
+        #             )
+        #             / 60.0,
+        #         ).otherwise(
+        #             regexp_replace(col("event_distance/length"), "[^0-9.]", "").cast(
+        #                 "double"
+        #             )
+        #         ),
+        #     ).otherwise(None),
+        # )
+
+        ## MOved to utils 
+    
+        # ## Event ID is generated from the event name
+        # .withColumn(
+        #     "event_id",
+        #     sha2(col("event_name"), 256),
+        # )
+
+
         ## Race ID is generated from the event name and date
         .withColumn(
             "race_id",
             sha2(concat_ws("_", col("event_name"), col("event_dates")), 256),
         )
+
+
         #### ATHLETE ############
         ## Athlete year of birth is converted to an integer, null replaces unknown values
         .withColumn(
@@ -191,15 +211,15 @@ def cleaned_marathos():
         ## Filter and keep the valid performances, then drop the column
         .filter(col("is_valid_performance") == True)
         .drop("is_valid_performance")
-        .filter(
-            ~col("event_distance/length").rlike(r"(?i)etappen|tage|days|/|,") &
-            col("athlete_id").isNotNull() & ## moved to utils
-            col("year_of_event").isNotNull() & ## moved to utils
-            col("event_dates").isNotNull() & 
-            (col("year_of_event") - col("athlete_year_of_birth") >= 18) & 
-            (col("year_of_event") - col("athlete_year_of_birth") <= 83) &
-            (col("athlete_year_of_birth") >= 1700)
-        )
+        # .filter(
+        #     ~col("event_distance/length").rlike(r"(?i)etappen|tage|days|/|,") &
+        #     col("athlete_id").isNotNull() & ## moved to utils
+        #     col("year_of_event").isNotNull() & ## moved to utils
+        #     col("event_dates").isNotNull() & 
+        #     (col("year_of_event") - col("athlete_year_of_birth") >= 18) & ## moved to utils
+        #     (col("year_of_event") - col("athlete_year_of_birth") <= 83) &
+        #     (col("athlete_year_of_birth") >= 1700)
+        # )
         ## Athlete performance distance is converted to km as a double
         .withColumn(
             "athlete_performance_distance_km",
@@ -261,18 +281,18 @@ def cleaned_marathos():
     )
 
     ## Event country name is mapped from the country code
-    df = df.join(
-        df_countries_event,
-        df["event_country"] == df_countries_event["event_country_code"],
-        "left",
-    )
+    # df = df.join(
+    #     df_countries_event,
+    #     df["event_country"] == df_countries_event["event_country_code"],
+    #     "left",
+    # )
 
-    df = df.withColumn(
-        "event_country_name",
-        when(
-            col("event_country_long").isNotNull(), col("event_country_long")
-        ).otherwise(col("event_country")),
-    )
+    # df = df.withColumn(
+    #     "event_country_name",
+    #     when(
+    #         col("event_country_long").isNotNull(), col("event_country_long")
+    #     ).otherwise(col("event_country")),
+    # )
     ## adding result id from race id and athlete id
     df = df.withColumn(
         "result_id",
