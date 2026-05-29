@@ -31,4 +31,9 @@ def filter_null_on_raw(df: DataFrame) -> DataFrame:
     )
     return df
 
-def athlete_age(df: DataFrame) -> DataFrame:
+def check_athlete_age(df: DataFrame) -> DataFrame:
+    df = df.filter(
+        (col("year_of_event") - col("athlete_year_of_birth") >= 18) & 
+        (col("year_of_event") - col("athlete_year_of_birth") <= 83) &
+        (col("athlete_year_of_birth") >= 1700)
+    )

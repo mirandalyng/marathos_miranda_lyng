@@ -193,8 +193,8 @@ def cleaned_marathos():
         .drop("is_valid_performance")
         .filter(
             ~col("event_distance/length").rlike(r"(?i)etappen|tage|days|/|,") &
-            col("athlete_id").isNotNull() &
-            col("year_of_event").isNotNull() &
+            col("athlete_id").isNotNull() & ## moved to utils
+            col("year_of_event").isNotNull() & ## moved to utils
             col("event_dates").isNotNull() & 
             (col("year_of_event") - col("athlete_year_of_birth") >= 18) & 
             (col("year_of_event") - col("athlete_year_of_birth") <= 83) &
