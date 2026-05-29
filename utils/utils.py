@@ -7,9 +7,11 @@ from pyspark.sql.functions import (
     when,
     round as spark_round,
     regexp_replace,
-    regexp_extract, 
+    regexp_extract,
     trim,
 )
+
+from pyspark.sql import DataFrame
 
 ################
 #### RENAME
@@ -56,20 +58,9 @@ def check_athlete_age(df: DataFrame) -> DataFrame:
 
 def filter_event_dates(df: DataFrame) -> DataFrame:
     df = df.filter(col("event_dates").isNotNull())
-    return df 
+    return df
+
 
 def filter_performance_distance(df: DataFrame) -> DataFrame:
-     df = df.filter(~col("event_distance/length").rlike(r"(?i)etappen|tage|days|/|,"))
-     return df
- 
- 
-
-
-
-
-
-
-
-
-
-
+    df = df.filter(~col("event_distance/length").rlike(r"(?i)etappen|tage|days|/|,"))
+    return df

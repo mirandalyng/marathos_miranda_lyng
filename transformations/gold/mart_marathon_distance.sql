@@ -2,7 +2,6 @@ USE CATALOG marathos;
 
 USE SCHEMA gold;
 
-
 CREATE OR REFRESH MATERIALIZED VIEW marathos.gold.mart_marathon_distance
   COMMENT "Serving view for marathons in distance category" AS
 

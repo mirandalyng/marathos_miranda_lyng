@@ -25,10 +25,81 @@
       ]
     },
     {
-      "name": "09da363a",
-      "displayName": "Untitled dataset",
+      "name": "1e2eff3a",
+      "displayName": "Top Marathon Events Ranked by Distance or Duration",
       "queryLines": [
-        ""
+        "SELECT event_name, metric_value, metric_type\n",
+        "FROM (\n",
+        "    SELECT event_name, metric_value, metric_type,\n",
+        "        ROW_NUMBER() OVER (ORDER BY metric_value DESC) AS rn\n",
+        "    FROM (\n",
+        "        SELECT event_name, MAX(event_distance_km) AS metric_value, 'distance' AS metric_type\n",
+        "        FROM marathos.gold.mart_marathon_distance\n",
+        "        WHERE event_distance_km IS NOT NULL\n",
+        "        GROUP BY event_name\n",
+        "    )\n",
+        "\n",
+        "    UNION ALL\n",
+        "\n",
+        "    SELECT event_name, metric_value, metric_type,\n",
+        "        ROW_NUMBER() OVER (ORDER BY metric_value DESC) AS rn\n",
+        "    FROM (\n",
+        "        SELECT event_name, MAX(event_distance_h) AS metric_value, 'length' AS metric_type\n",
+        "        FROM marathos.gold.mart_marathon_length\n",
+        "        WHERE event_distance_h IS NOT NULL\n",
+        "        GROUP BY event_name\n",
+        "    )\n",
+        ")\n",
+        "WHERE rn <= 10\n",
+        "AND metric_type = :metric_type\n",
+        "ORDER BY metric_value DESC"
+      ],
+      "parameters": [
+        {
+          "displayName": "metric_type",
+          "keyword": "metric_type",
+          "dataType": "STRING",
+          "defaultSelection": {
+            "values": {
+              "dataType": "STRING",
+              "values": [
+                {
+                  "value": "distance"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "8ebf0788",
+      "displayName": "Top Brazilian Marathon Events by Finisher Count",
+      "queryLines": [
+        "select \n",
+        "    event_country, \n",
+        "    event_country_name, \n",
+        "    event_distance_km, \n",
+        "    event_number_of_finisher\n",
+        "from marathos.gold.dim_event \n",
+        "where event_country = 'BRA'\n",
+        "order by event_number_of_finisher desc\n",
+        "limit 10"
+      ]
+    },
+    {
+      "name": "f90a1874",
+      "displayName": "Top Brazilian Marathon Finishers and Event Details Dataset",
+      "queryLines": [
+        "select \n",
+        "    event_country, \n",
+        "    event_country_name, \n",
+        "    event_distance_h, \n",
+        "    event_number_of_finisher\n",
+        "from marathos.gold.dim_event \n",
+        "where event_country = 'BRA'\n",
+        "order by event_number_of_finisher desc\n",
+        "limit 10"
       ]
     }
   ],
@@ -42,7 +113,7 @@
             "name": "c946cbab",
             "multilineTextboxSpec": {
               "lines": [
-                "<span style=\"font-size: 30px;font-family: Tahoma;\">**Ultra Marathon Dashboard**</span>"
+                "<span style=\"font-size: 48px;font-family: Tahoma;line-height: 1.5;\">**Ultra Marathon Dashboard**</span>"
               ]
             },
             "specExtensions": {
@@ -54,8 +125,8 @@
           "position": {
             "x": 0,
             "y": 0,
-            "width": 6,
-            "height": 1
+            "width": 7,
+            "height": 2
           }
         },
         {
@@ -65,18 +136,24 @@
               {
                 "name": "main_query",
                 "query": {
-                  "datasetName": "a48a7344",
+                  "datasetName": "1e2eff3a",
                   "fields": [
                     {
-                      "name": "sum(event_distance_h)",
-                      "expression": "SUM(`event_distance_h`)"
+                      "name": "metric_value",
+                      "expression": "`metric_value`"
                     },
                     {
                       "name": "event_name",
                       "expression": "`event_name`"
                     }
                   ],
-                  "disaggregated": false
+                  "parameterValues": [
+                    {
+                      "keyword": "metric_type",
+                      "selection": {}
+                    }
+                  ],
+                  "disaggregated": true
                 }
               }
             ],
@@ -86,35 +163,121 @@
                 "showTitle": false,
                 "showDescription": false
               },
+              "mark": {
+                "colors": [
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 2
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 2
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 3
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 4
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 5
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 6
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 7
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 8
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 9
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 10
+                  }
+                ]
+              },
               "widgetType": "bar",
               "encodings": {
                 "x": {
-                  "fieldName": "sum(event_distance_h)",
-                  "displayName": "Event Length",
+                  "fieldName": "metric_value",
+                  "displayName": "Event unit  ",
                   "scale": {
                     "type": "quantitative"
                   }
                 },
                 "y": {
                   "fieldName": "event_name",
-                  "axis": {
-                    "title": "Event/Race Name"
-                  },
+                  "displayName": "Event Name",
                   "scale": {
-                    "type": "categorical",
-                    "sort": {
-                      "by": "x-reversed"
-                    }
+                    "type": "categorical"
                   }
+                },
+                "label": {
+                  "show": false
                 }
               }
             }
           },
           "position": {
             "x": 0,
-            "y": 1,
-            "width": 6,
-            "height": 5
+            "y": 3,
+            "width": 7,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "type-of-ultra-marathon",
+            "queries": [
+              {
+                "name": "parameter_dashboards/01f159d3e5621b888180cf156a09da47/datasets/01f15b424a151fe7a397a5aef85e8755_metric_type",
+                "query": {
+                  "datasetName": "1e2eff3a",
+                  "parameters": [
+                    {
+                      "name": "metric_type",
+                      "keyword": "metric_type"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "disallowAll": true,
+              "frame": {
+                "showTitle": true,
+                "title": "Choose length or distance:",
+                "showDescription": false
+              },
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "parameterName": "metric_type",
+                    "queryName": "parameter_dashboards/01f159d3e5621b888180cf156a09da47/datasets/01f15b424a151fe7a397a5aef85e8755_metric_type"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 7,
+            "height": 1
           }
         }
       ],
