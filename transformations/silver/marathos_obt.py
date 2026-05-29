@@ -4,6 +4,7 @@ from utils.utils import (
     check_athlete_age,
     filter_event_dates,
     filter_performance_distance,
+    filter_invalid_speed
 )
 from utils.transformation import (
     transform_event,
@@ -61,6 +62,7 @@ def cleaned_marathos():
     df = transform_athlete(df)
     df = check_athlete_age(df)
     df = transform_performance(df)
+    df = filter_invalid_speed(df)
     df = join_athlete_country(df, df_countries)
     df = join_event_country(df, df_countries)
     df = generate_result_ids(df)

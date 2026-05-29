@@ -64,3 +64,16 @@ def filter_event_dates(df: DataFrame) -> DataFrame:
 def filter_performance_distance(df: DataFrame) -> DataFrame:
     df = df.filter(~col("event_distance/length").rlike(r"(?i)etappen|tage|days|/|,"))
     return df
+
+
+def filter_invalid_speed(df: DataFrame) -> DataFrame:
+    df = df.filter(
+        when(
+            col("event_unit").isin("km", "mi"),
+            col("athlete_average_speed") <= 20
+        ).when(
+            col("event_unit") == "h",
+            col("athlete_performance_distance_km") <= 320
+        ).otherwise(True)
+    )
+    return df
