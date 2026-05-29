@@ -24,6 +24,8 @@ from pyspark.sql.functions import (
         "delta.minWriterVersion": "5",
     },
 )
+
+
 def cleaned_marathos():
     df = spark.sql("FROM STREAM marathos.bronze.raw_marathos")
     df = rename_columns_to_snakecase(df)

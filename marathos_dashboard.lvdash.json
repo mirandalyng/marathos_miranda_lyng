@@ -16,13 +16,19 @@
       "name": "a48a7344",
       "displayName": "Top Marathon Events by Distance",
       "queryLines": [
-        "SELECT\n",
-        "    event_dates,\n",
+        "SELECT DISTINCT\n",
         "    event_name, \n",
         "    event_distance_h\n",
         "FROM marathos.gold.mart_marathon_length\n",
         "ORDER BY event_distance_h desc\n",
         "LIMIT 10"
+      ]
+    },
+    {
+      "name": "09da363a",
+      "displayName": "Untitled dataset",
+      "queryLines": [
+        ""
       ]
     }
   ],
@@ -36,7 +42,7 @@
             "name": "c946cbab",
             "multilineTextboxSpec": {
               "lines": [
-                "<span style=\"font-size:36px;line-height:1.5;font-family:Tahoma\">**Ultra Marathon Dashboard**</span>"
+                "<span style=\"font-size: 30px;font-family: Tahoma;\">**Ultra Marathon Dashboard**</span>"
               ]
             },
             "specExtensions": {
@@ -48,8 +54,67 @@
           "position": {
             "x": 0,
             "y": 0,
-            "width": 12,
-            "height": 2
+            "width": 6,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "39ae77c9",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "a48a7344",
+                  "fields": [
+                    {
+                      "name": "sum(event_distance_h)",
+                      "expression": "SUM(`event_distance_h`)"
+                    },
+                    {
+                      "name": "event_name",
+                      "expression": "`event_name`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "showTitle": false,
+                "showDescription": false
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "sum(event_distance_h)",
+                  "displayName": "Event Length",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "event_name",
+                  "axis": {
+                    "title": "Event/Race Name"
+                  },
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "x-reversed"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 6,
+            "height": 5
           }
         }
       ],
